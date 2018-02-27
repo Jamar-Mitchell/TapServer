@@ -6,6 +6,7 @@ var User = require(libs + 'model/user');
 var log = require(libs + 'log')(module);
 
 var db = require(libs + 'db/mongoose');
+var set = false;
 
 router.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -70,6 +71,35 @@ router.get('/userinfo/:id', passport.authenticate('bearer', { session: false }),
     }
 );
 
+router.post('/enable',
+    function(req, res) {
+                set = true;
+                return res.json({
+                 message:"attendance has been set"
+             
+    });
+
+});
+
+router.post('/disable',
+    function(req, res) {
+                set = false;
+                return res.json({
+                 message:"attendance has been stopped"
+             
+    });
+
+});
+
+router.get('/test',
+    function(req, res) {
+                return res.json({
+                    set
+                    
+             
+    });
+
+});
 
 router.post('/', passport.authenticate('oauth2-client-password', { session: false }),
     function(req, res) {
@@ -90,7 +120,7 @@ router.post('/', passport.authenticate('oauth2-client-password', { session: fals
                 log.info(err.code);
                 if (err.code === 11000) {
                     res.statusCode = 405;
-                    res.statusMessage = ' Username Already Exists';
+                    res.statusMessage = ' Username or id already exists';
                     res.end();
                 } else {
                     res.statusCode = 500;

@@ -11,7 +11,7 @@ var mongoose = require('mongoose'),
 		},
 		firstname: {
 			type: String,
-			unique: true,
+			unique: false,
 			required: true
 		},
 		email: {
@@ -21,7 +21,7 @@ var mongoose = require('mongoose'),
 		},
 		lastname: {
 			type: String,
-			unique: true,
+			unique: false,
 			required: true
 		},
 		studentId: {
