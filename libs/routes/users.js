@@ -3,8 +3,9 @@ var passport = require('passport');
 var router = express.Router();
 var libs = process.cwd() + '/libs/';
 var User = require(libs + 'model/user');
+var Attendance = require(libs + 'model/attendance')
 var log = require(libs + 'log')(module);
-
+var Course = require(libs + 'model/course')
 var db = require(libs + 'db/mongoose');
 var set = false;
 
@@ -100,6 +101,76 @@ router.get('/test',
     });
 
 });
+router.post('/course/:courseId/attendance/:attendanceId/user/:studentId', passport.authenticate('bearer', { session: false }),
+    function(req, res) {
+        User.findOne({ studentId: req.params.studentId }, (err, user) => {
+            if (!user) {
+                res.statusCode = 404;
+
+                return res.json({
+                    error: 'User not found'
+                });
+            }
+
+            if (!err) {
+                Attendance.update({ _id: req.params.attendanceId }, {
+                    $push: { user: user._id },
+                    $inc: { attendanceCount: 1 }
+                },
+                function(err, obj) {
+                    if (!err) {
+                       Course.update({ _id: req.params.courseId }, {
+                    $push: { attendance: attendance._id },
+                    $inc: { attendanceNum: 1 }
+                },
+                function(err, obj) {
+                    if (!err) {
+                        return res.json({
+                            status: 'OK',
+                            response: obj
+                        });
+                    }
+                    console.log(err);
+                    return res.status(500).send();
+                });
+                    }
+                    console.log(err);
+                    return res.status(500).send();
+                });
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+
+                return res.json({
+                    error: 'Server error'
+                });
+            }
+
+        });
+    }
+);
+
+
+router.get('/attendance/:id', passport.authenticate('bearer', { session: false }),
+    function(req, res) {
+        Attendance.findOne({ _id: req.params.id })
+            .populate('user')
+            .exec(function(err, obj) {
+
+                if (!err) {
+                    return res.json(obj);
+                } else {
+                    res.statusCode = 500;
+                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+
+                    return res.json({
+                        error: 'Server error'
+                    });
+                }
+            });
+    }
+);
+
 
 router.post('/', passport.authenticate('oauth2-client-password', { session: false }),
     function(req, res) {
