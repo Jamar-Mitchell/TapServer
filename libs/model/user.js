@@ -34,6 +34,11 @@ var mongoose = require('mongoose'),
 			default: 0,
             required:true
 		},
+		numOfCourses:{
+        type:Number,
+        default: 0,
+        required:true
+        },
 		hashedPassword: {
 			type: String,
 			required: true

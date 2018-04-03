@@ -71,5 +71,33 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
 
 });
 
+router.post('/user/:userId/course/:courseId', function(req, res) {
+     User.findOne({ _id: req.params.userId },
+            function(err, user) {
+
+                if (!err) {
+                   Course.update({ _id: req.params.courseId }, {
+                    $push: { user: user._id },
+                    $inc: { numOfStudents: 1 }
+                },
+               function(err, obj) {
+                    if (!err) {
+                        return res.json({
+                            status: 'OK',
+                            response: obj
+                        });
+                    }
+                });
+                } else {
+                    res.statusCode = 500;
+                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+
+                    return res.json({
+                        error: 'Server error'
+                    });
+                }
+            });
+   
+});
 
 module.exports = router;
