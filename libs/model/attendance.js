@@ -2,8 +2,13 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 
 	Attendance = new Schema({
-		number: {
-			type: Number,
+		date: {
+			type: String,
+			unique: true,
+			required: true
+        },
+    	time: {
+			type: String,
 			unique: true,
 			required: true
         },

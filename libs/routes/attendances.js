@@ -24,6 +24,8 @@ router.use(function(req, res, next) {
     }
 });
 
+
+
 router.get('/:id', passport.authenticate('bearer', { session: false }),
     function(req, res) {
         Course.findOne({ _id: req.params.id })
@@ -46,8 +48,10 @@ router.get('/:id', passport.authenticate('bearer', { session: false }),
 
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
-    var attendance = new Attendance({
-        number: req.body.number,
+ 
+   var attendance = new Attendance({
+        date: req.body.date,
+        time: req.body.time,
     });
 
     attendance.save(function(err, obj) {
@@ -56,7 +60,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
                     $push: { attendance: attendance._id },
                     $inc: { attendanceNum: 1 }
                 },
-                function(err, obj) {
+               function(err, obj) {
                     if (!err) {
                         return res.json({
                             status: 'OK',
@@ -68,8 +72,10 @@ router.post('/', passport.authenticate('bearer', { session: false }), function(r
                 });
         }
     });
-
+  
+  
 });
 
+ 
 
 module.exports = router;

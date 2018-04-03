@@ -29,10 +29,20 @@ var mongoose = require('mongoose'),
 			unique: true,
 			required: true
 		},
+		count: {
+			type: Number,
+			default: 0,
+            required:true
+		},
 		hashedPassword: {
 			type: String,
 			required: true
 		},
+		courses:[{
+         type: Schema.Types.ObjectId,
+        ref: 'Course'
+	   }],
+	
 		salt: {
 			type: String,
 			required: true

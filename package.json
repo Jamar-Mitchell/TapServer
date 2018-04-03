@@ -5,7 +5,7 @@
     "description": "Simple example of RESTful API with Node.js and passport",
     "private": true,
     "scripts": {
-        "start": "node ./bin/www"
+        "start": "nodemon ./bin/www"
     },
     "dependencies": {
         "body-parser": "~1.8.x",

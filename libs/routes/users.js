@@ -8,6 +8,9 @@ var log = require(libs + 'log')(module);
 var Course = require(libs + 'model/course')
 var db = require(libs + 'db/mongoose');
 var set = false;
+var courseId;
+var attendanceId;
+
 
 router.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -75,6 +78,8 @@ router.get('/userinfo/:id', passport.authenticate('bearer', { session: false }),
 router.post('/enable',
     function(req, res) {
                 set = true;
+                courseId = req.body.courseId;
+                attendanceId = req.body.attendanceId;
                 return res.json({
                  message:"attendance has been set"
              
@@ -95,47 +100,37 @@ router.post('/disable',
 router.get('/test',
     function(req, res) {
                 return res.json({
-                    set
-                    
-             
+                    set,
+                    courseId,
+                    attendanceId       
     });
 
 });
-router.post('/course/:courseId/attendance/:attendanceId/user/:studentId', passport.authenticate('bearer', { session: false }),
+router.post('/course/:courseId/attendance/:attendanceId/user/:studentId',
     function(req, res) {
-        User.findOne({ studentId: req.params.studentId }, (err, user) => {
+        User.findOne({ studentId: req.params.studentId }, function(err, user) {
             if (!user) {
                 res.statusCode = 404;
-
+                
                 return res.json({
                     error: 'User not found'
                 });
             }
 
             if (!err) {
+                console.log(user);
                 Attendance.update({ _id: req.params.attendanceId }, {
                     $push: { user: user._id },
                     $inc: { attendanceCount: 1 }
                 },
                 function(err, obj) {
                     if (!err) {
-                       Course.update({ _id: req.params.courseId }, {
-                    $push: { attendance: attendance._id },
-                    $inc: { attendanceNum: 1 }
-                },
-                function(err, obj) {
-                    if (!err) {
-                        return res.json({
+                         return res.json({
                             status: 'OK',
                             response: obj
                         });
+
                     }
-                    console.log(err);
-                    return res.status(500).send();
-                });
-                    }
-                    console.log(err);
-                    return res.status(500).send();
                 });
             } else {
                 res.statusCode = 500;

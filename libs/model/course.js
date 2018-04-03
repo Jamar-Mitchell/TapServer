@@ -17,6 +17,16 @@ var mongoose = require('mongoose'),
         default: 0,
         required:true
     },
+        numOfStudents:{
+        type:Number,
+        default: 0,
+        required:true
+    },
+       user:[{
+         type: Schema.Types.ObjectId,
+        ref: 'User'
+       }],
+        
 		attendance:[{
         type: Schema.Types.ObjectId,
         ref: 'Attendance'
