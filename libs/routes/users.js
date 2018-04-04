@@ -10,6 +10,7 @@ var db = require(libs + 'db/mongoose');
 var set = false;
 var courseId;
 var attendanceId;
+var studentId
 
 
 router.use(function(req, res, next) {
@@ -102,7 +103,8 @@ router.get('/test',
                 return res.json({
                     set,
                     courseId,
-                    attendanceId       
+                    attendanceId,
+                    studentId       
     });
 
 });
