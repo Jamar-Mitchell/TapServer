@@ -10,7 +10,7 @@ var db = require(libs + 'db/mongoose');
 var set = false;
 var courseId;
 var attendanceId;
-var studentId
+var studentId="none"
 
 
 router.use(function(req, res, next) {
