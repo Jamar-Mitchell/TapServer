@@ -232,4 +232,24 @@ router.post('/', passport.authenticate('oauth2-client-password', { session: fals
    
 });
 
+router.get('/:id', passport.authenticate('bearer', { session: false }),
+    function(req, res) {
+        User.findOne({ _id: req.params.id })
+            .populate('courses')
+            .exec(function(err, user) {
+
+                if (!err) {
+                    return res.json(user);
+                } else {
+                    res.statusCode = 500;
+                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+
+                    return res.json({
+                        error: 'Server error'
+                    });
+                }
+            });
+    }
+);
+
 module.exports = router;
