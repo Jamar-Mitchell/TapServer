@@ -127,7 +127,7 @@ router.post('/course/:courseId/attendance/:attendanceId/user/:studentId',
                 },
                 function(err, obj) {
                     if (!err) {
-                         return res.json({
+                     return res.json({
                             status: 'OK',
                             response: obj
                         });
@@ -204,13 +204,13 @@ router.post('/', passport.authenticate('oauth2-client-password', { session: fals
     });
 
     router.post('/user/:userId/course/:courseId', function(req, res) {
-     Course.findOne({ _id: req.params.userId },
-            function(err, user) {
+     Course.findOne({ _id: req.params.courseId },
+            function(err, course) {
 
                 if (!err) {
-                   User.update({ _id: req.params.courseId }, {
-                    $push: { user: user._id },
-                    $inc: { numOfStudents: 1 }
+                   User.update({ _id: req.params.userId }, {
+                    $push: { courses: course._id },
+                    $inc: { count: 1 }
                 },
                function(err, obj) {
                     if (!err) {

@@ -42,6 +42,26 @@ router.get('/', passport.authenticate('bearer', { session: false }),
     }
 );
 
+router.get('/:id', passport.authenticate('bearer', { session: false }),
+    function(req, res) {
+        User.findOne({ _id: req.params.id })
+            .populate('courses')
+            .exec(function(err, obj) {
+
+                if (!err) {
+                    return res.json(obj);
+                } else {
+                    res.statusCode = 500;
+                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+
+                    return res.json({
+                        error: 'Server error'
+                    });
+                }
+            });
+    }
+);
+
 
 router.post('/', passport.authenticate('bearer', { session: false }), function(req, res) {
     var course = new Course({
@@ -99,5 +119,7 @@ router.post('/user/:userId/course/:courseId', function(req, res) {
             });
    
 });
+
+
 
 module.exports = router;
